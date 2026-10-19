@@ -1,6 +1,6 @@
 ---
 name: actor-network-tracing
-description: Use when a researcher wants a Latourian actor-network account of a defined corpus (mixed literature, interview transcripts/notes, ethnographic fieldnotes): identify actants by the difference they make, extract associations only from verifiable inscriptions, classify translations and mediators, map controversies, and assemble an account under a closed-world rule. Not for thematic coding (use a thematic analysis skill) and not for corpora the researcher cannot define and bound.
+description: "Use when a researcher wants a Latourian actor-network account of a defined corpus (mixed literature, interview transcripts/notes, ethnographic fieldnotes): identify actants by the difference they make, extract associations only from verifiable inscriptions, classify translations and mediators, map controversies, and assemble an account under a closed-world rule. Not for thematic coding (use a thematic analysis skill) and not for corpora the researcher cannot define and bound."
 ---
 
 # Actor-Network Tracing

@@ -12,22 +12,29 @@ difference it makes, no association without a citable inscription, no
 explanation by appeal to aggregates ("power", "culture", "the market")
 that the corpus itself does not trace.
 
-This skill prepares and proposes; the researcher ratifies. There are two
-human gates (census review + cut declaration) that must not be skipped.
+This skill prepares and proposes; the researcher ratifies. There are three
+human gates (corpus review, census review, and the cut declaration) that must not be skipped.
 
 ## Inputs
 
-- A corpus folder with a `corpus.yaml` manifest. Every document is
-  registered: `id`, `path`, `genre` (literature | transcript |
-  interview-notes | fieldnotes), `title`, `date`, `source`. Unregistered
-  material does not exist for this skill.
 - The researcher's questions, stated up front.
+- Either an existing corpus (a folder with a `corpus.yaml` manifest —
+  every document registered: `id`, `path`, `genre` (literature |
+  transcript | interview-notes | fieldnotes), `title`, `date`,
+  `source`) or a source plan naming where the material lives (local
+  files, a repository, a forum, an archive). If no corpus exists yet,
+  Pass 0 constructs it; unregistered material does not exist for this
+  skill either way.
 - A working directory for state (created if absent): `state/`.
 
-If the manifest or the questions are missing, ask. Do not invent a frame.
+If the questions are missing, ask. Do not invent a frame.
 
 ## State files (the skill's memory)
 
+- `state/sources.jsonl` — the provenance register: one line per
+  acquired source: `id`, `origin` (path or URL), `acquired` (date),
+  `basis` (public | consented | orientation-only), `genre`. Written
+  in Pass 0; nothing enters the corpus without a line here.
 - `state/passages.jsonl` — chunked passages with stable IDs
   (`docID:pStart-pEnd`), produced by `scripts/chunk_corpus.py`.
   Chunking is genre-aware: transcripts at speaker turns, fieldnotes at
@@ -46,11 +53,48 @@ If the manifest or the questions are missing, ask. Do not invent a frame.
 
 ## Procedure
 
-### Pass 0 — Define and chunk
-Confirm the corpus boundary and the questions with the researcher; the
-boundary is a research decision and is recorded in `state/cut.md`
-before any tracing. Run `scripts/chunk_corpus.py` to build
-`passages.jsonl`.
+### Pass 0 — Construct the corpus
+
+A corpus is made, not found. If the researcher brings one, verify it
+against the steps below; if not, build it with them.
+
+1. **Boundary first.** State the questions; declare the corpus
+   boundary — period, sources, genres — and record it in
+   `state/cut.md` before any acquisition. The boundary is the first
+   cut: name what lies beyond it and which claims the exclusion
+   forbids, the same discipline Gate 2 applies at the end.
+2. **Source plan.** Inventory where the material lives. Assign each
+   source a genre *before* reading its content: provenance before
+   content, always. A plan template ships with the skill
+   (`templates/corpus-plan.md`).
+3. **Acquire.** Collect the material into the corpus folder, one file
+   per document, originals unmodified. Patterns: local files are
+   taken as-is; platform exports keep their thread structure (a
+   thread is a document, its comments become passages when chunked);
+   web material is captured as text with its URL and capture date.
+   Register every acquisition in `state/sources.jsonl` with its
+   origin, date, genre, and basis.
+4. **Basis check (hard stop).** Every source carries a basis:
+   *public* (published to the world — usable and citable),
+   *consented* (private material the researcher has a recorded basis
+   to use), or *orientation-only* (member-space material — closed
+   channels, internal lists: it may inform the researcher's judgment
+   but is never registered, chunked, or quoted). A source whose basis
+   is unclear is excluded and the exclusion is logged. De-identify at
+   intake where the design requires it.
+5. **Assemble and chunk.** Write `corpus.yaml` from the register
+   (each manifest `source` matches a `sources.jsonl` line), then run
+   `scripts/chunk_corpus.py`. A document that yields zero passages is
+   a failed intake, not an empty source — fix or exclude it, and log
+   which. Prefer genre coverage and inscription density over volume;
+   if the corpus is too large to census honestly, narrow the boundary
+   rather than sampling silently. Any sampling is declared in
+   `state/cut.md` with its rule and rationale.
+
+**Gate 0 — Corpus review.** Present the register, the boundary
+statement, and the exclusion log. The researcher ratifies the corpus
+before chunking. Material they strike is removed from the folder, not
+merely ignored.
 
 ### Pass 1 — Actant census
 Scan passages in windows. Nominate an actant only with a
@@ -125,6 +169,9 @@ Rules, verified by `scripts/verify_citations.py --account`:
 
 ## Guardrails
 
+- Unregistered material does not exist: no source, no passage; no
+  passage, no claim. Orientation-only material never crosses into the
+  corpus, however relevant it feels.
 - Verbatim or nothing: quotes are never paraphrased, cleaned, or
   completed. Notes-genre material is flagged as recall; its quotes
   support substance, not wording.
@@ -141,7 +188,8 @@ Rules, verified by `scripts/verify_citations.py --account`:
 
 ## Outputs
 
-1. `state/actants.jsonl` and `state/associations.jsonl` (reviewed).
+1. `state/sources.jsonl` (provenance register), `state/actants.jsonl`,
+   and `state/associations.jsonl` (reviewed).
 2. A controversy map (positions × inscriptions).
 3. `state/cut.md` (boundary + cut + beyond-the-cut note).
 4. The account: a trace narrative in which every claim is one hop

@@ -18,7 +18,7 @@ Two layers:
 
 | Skill | What it does | Maturity |
 |---|---|---|
-| [actor-network-tracing](skills/actor-network-tracing/) | Latourian tracing of a defined corpus: actant census by the difference test, associations extracted only from verifiable inscriptions, translation and mediator classification, controversy mapping, closed-world account assembly | v0.1 prototype |
+| [actor-network-tracing](skills/actor-network-tracing/) | Latourian tracing of a defined corpus: actant census by the difference test, associations extracted only from verifiable inscriptions, translation and mediator classification, controversy mapping, closed-world account assembly | v0.2 — adds corpus construction (Pass 0): provenance register, basis check, corpus-review gate |
 
 ## Rules of the house
 
